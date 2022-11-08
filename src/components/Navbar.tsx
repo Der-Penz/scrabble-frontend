@@ -11,7 +11,7 @@ export default function Navbar() {
 
 	return (
 		<nav className="flex flex-row gap-2 justify-start p-2 bg-base-300 items-center">
-			<TbLetterCase size={'2%'} className='hover:animate-ping border rounded-lg border-primary text-primary p-1'/>
+			<TbLetterCase size={'2.4rem'} className='hover:animate-ping border rounded-lg border-primary text-primary p-1'/>
 			<a href='/' className='font-bold text-2xl underline decoration-wavy hover:animate-pulse'>Scrabble</a>
 			<select defaultValue={localStorage.getItem('theme') || 'Pick a theme'} className='select ml-auto' data-choose-theme>
 				<option disabled >Pick a theme</option>

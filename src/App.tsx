@@ -6,7 +6,7 @@ import Room from './routes/Room';
 
 function App() {
 	return (
-		<div>
+		<div className='h-[100vh] flex flex-col'>
 			<Navbar></Navbar>
 			<BrowserRouter>
 				<Routes>
