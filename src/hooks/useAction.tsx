@@ -11,7 +11,7 @@ const useAction = <T extends unknown>(
 	cb: (
 		message: WSResponse<T>,
 		send: SendJsonMessage,
-		incomingAction?: Action
+		incomingAction: Action
 	) => void
 ) => {
 	let url = useWsUrl() || '';
