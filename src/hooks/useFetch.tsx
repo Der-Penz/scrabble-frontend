@@ -55,8 +55,10 @@ export const useFetch = <T extends unknown>(
 		};
 	}, [counter]);
 
-	const makeRequest = (url: string) => {
-		setUrl(url);
+	const makeRequest = (url?: string) => {
+		if(url){
+			setUrl(url);
+		}
 		setCounter((prev) => (prev + 1) % 1000);
 	};
 
