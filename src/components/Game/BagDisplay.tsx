@@ -29,8 +29,7 @@ export default function BagDisplay({ bag }: BagDisplayProps) {
 							<div className="mx-1"></div>
 						)}
 						<LetterTile
-							char={tile.char}
-							points={tile.points}
+							tile={tile}
 							tooltip={true}
 							displayPoints={false}
 						/>

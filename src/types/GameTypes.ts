@@ -1,18 +1,18 @@
 export type Tile = {
-    char: string,
-    points: number,
-}
+	char: string;
+	points: number;
+};
 
 export type BoardPosition = {
-    x: number,
-    y: number,
-    placedTile: Tile | null,
-    factor?: number,
-    type?: 'WORD' | 'LETTER',
-    used?: boolean,   
-}
+	x: number;
+	y: number;
+	placedTile: Tile | null;
+	factor?: number;
+	type?: 'WORD' | 'LETTER';
+	used?: boolean;
+};
 
-export type Board = BoardPosition[][]
+export type Board = BoardPosition[][];
 
 export type GameInfo = {
 	currentPlayer: string;
@@ -26,3 +26,10 @@ export type Bag = {
 	tiles: Tile[];
 };
 
+export type Bench = {
+	tilesOnHand: Tile[];
+    points: number,
+    owner: string,
+    maxTiles: number,
+
+};

@@ -56,6 +56,7 @@ export default function Room() {
 	const [self, setSelf] = useState<Player>();
 	const [started, setStarted] = useState(false);
 	const [formData, setFormData] = useState<RoomSetting>(defaultSettings);
+	const [settings, setSettings] = useState<RoomSetting>();
 
 	const [players, dispatchPlayer] = useReducer<
 		Reducer<Player[], PlayerPayload>
@@ -77,21 +78,26 @@ export default function Room() {
 		}
 	);
 
-	useAction<{}>('game:started', () => {
+	useAction<RoomSetting>('game:started', (message) => {
 		setStarted(true);
+		setSettings(message.message as RoomSetting);
 	});
 
 	const startGame = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		sendMessage(new WSRequest('game:start', formData));
+		setStarted(true);
 	};
 
 	return (
 		<section className="flex-1">
-			<RoomHeader id={searchParams.get('id') || ''} name={self?.name || ''} />
+			<RoomHeader
+				id={searchParams.get('id') || ''}
+				name={self?.name || ''}
+			/>
 			{started ? (
-				<Scrabble />
+				<Scrabble settings={settings} />
 			) : (
 				<div className="grid place-items-center gap-2">
 					<h4 className="font-bold text-lg text-center border-b-4 rounded">
