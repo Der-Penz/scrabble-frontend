@@ -16,7 +16,7 @@ type InputDisplayProps = {
 export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 	const message = useMessage();
 	const showModal = useModal();
-	const [selected, setSelected] = useState<number[]>([]);
+	const [selected, setSelected] = useState<number>();
 
 	const TradeElement = (
 		<div className="flex flex-col gap-2 items-center">
@@ -114,6 +114,10 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 
 	const takeTilesBack = () => {};
 
+	const selectTile = (index: number) => {
+		setSelected(selected === index ? -1 : index);
+	};
+
 	return (
 		<div>
 			<section className="bg-base-300 rounded-lg my-2 flex flex-row justify-center gap-2 p-2">
@@ -126,7 +130,10 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 						tile={tile}
 						displayPoints={true}
 						tooltip={false}
-						className={'hover:border-info'}
+						className={classNames(
+							{ 'border-info scale-110': selected === i },
+						)}
+						onClick={() => selectTile(i)}
 					/>
 				))}
 			</section>
