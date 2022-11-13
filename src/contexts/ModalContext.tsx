@@ -67,13 +67,6 @@ export default function ModalProvider({ children }: Props) {
 					)}
 					<p className="py-4">{modal?.content}</p>
 					<div className="modal-action">
-						<label
-							htmlFor={modalId}
-							onClick={onAccept}
-							className="btn btn-success"
-						>
-							{modal?.acceptButton.content}
-						</label>
 						{modal?.deniedButton && (
 							<label
 								htmlFor={modalId}
@@ -83,6 +76,13 @@ export default function ModalProvider({ children }: Props) {
 								{modal.deniedButton.content}
 							</label>
 						)}
+						<label
+							htmlFor={modalId}
+							onClick={onAccept}
+							className="btn btn-success"
+						>
+							{modal?.acceptButton.content}
+						</label>
 					</div>
 				</div>
 			</div>

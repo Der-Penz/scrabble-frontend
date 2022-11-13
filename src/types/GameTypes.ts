@@ -16,10 +16,8 @@ export type Board = BoardPosition[][];
 
 export type GameInfo = {
 	currentPlayer: string;
-	players: {
-		[name: string]: number;
-	};
-	timeToPlay?: number;
+	players: { [name: string]: { points: number; timeLeft: number } };
+	timeToPlay: number;
 };
 
 export type Bag = {
@@ -28,8 +26,7 @@ export type Bag = {
 
 export type Bench = {
 	tilesOnHand: Tile[];
-    points: number,
-    owner: string,
-    maxTiles: number,
-
+	points: number;
+	owner: string;
+	maxTiles: number;
 };

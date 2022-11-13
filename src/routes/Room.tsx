@@ -80,7 +80,7 @@ export default function Room() {
 
 	useAction<RoomSetting>('game:started', (message) => {
 		setStarted(true);
-		setSettings(message.message as RoomSetting);
+		setSettings(message.message);
 	});
 
 	const startGame = (e: React.FormEvent<HTMLFormElement>) => {

@@ -25,10 +25,10 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 	const [currentPlayer, setCurrentPlayer] = useState('');
 
 	useAction<{
-		bag: any;
+		bag: Bag;
 		board: Board;
 		currentPlayer: string;
-		players: { [name: string]: number };
+		players: { [name: string]: { points: number; timeLeft: number } };
 	}>('game:state', (message) => {
 		setBoard(message.message.board);
 		setGameInfo({
@@ -43,8 +43,6 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 	useAction<{ currentPlayer: string; bench: Bench }>(
 		'game:next',
 		(message) => {
-			console.log('got it');
-
 			setBench(message.message.bench);
 		}
 	);
@@ -53,7 +51,10 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		<section className="flex flex-row gap-2">
 			<section className="flex flex-col gap-2 mx-auto">
 				<BoardDisplay board={board} />
-				<InputDisplay bench={bench} />
+				<InputDisplay
+					bench={bench}
+					onTurn={gameInfo?.currentPlayer === bench.owner}
+				/>
 			</section>
 			<section className="flex flex-col gap-2 ml-auto">
 				<GameInfoDisplay gameInfo={gameInfo} settings={settings} />

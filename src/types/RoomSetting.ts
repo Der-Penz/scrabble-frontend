@@ -5,8 +5,8 @@ export type RoomSetting = {
 };
 
 export enum Objective {
-	BASE = 'Base',
-	TIME = 'Time',
-	POINTS = 'Points',
-	SEPARATED_TIME = 'Separated Time',
+	BASE = 'BASE',
+	TIME = 'TIME',
+	POINTS = 'POINTS',
+	SEPARATED_TIME = 'SEPARATED_TIME',
 }
