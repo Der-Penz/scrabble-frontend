@@ -45,6 +45,9 @@ export default function GameInfoDisplay({ gameInfo, settings }: GameInfoProps) {
 				{settings?.objectiveType && (
 					<span>{settings?.objectiveType} •</span>
 				)}
+				{settings?.objectiveType === Objective.POINTS && (
+					<span>{settings?.points}</span>
+				)}
 
 				{settings?.objectiveType === Objective.TIME && (
 					<span
