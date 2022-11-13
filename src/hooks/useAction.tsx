@@ -22,10 +22,10 @@ const useAction = <T extends unknown>(
 	useEffect(() => {
 		if (lastJsonMessage === null) return;
 
-		console.log('Message incoming', lastJsonMessage);
 		const message = lastJsonMessage as WSResponse<T>;
 
 		if (typeof action === 'string') {
+			console.log('Message incoming', lastJsonMessage);
 			if (message.action === action) {
 				cb(message, sendJsonMessage, message.action);
 			}
@@ -38,7 +38,7 @@ const useAction = <T extends unknown>(
 
 	const sendMessage = <T extends unknown>(message: WSRequest<T>) => {
 		sendJsonMessage(message.toJSON() as JsonValue);
-	}
+	};
 
 	return sendMessage;
 };
