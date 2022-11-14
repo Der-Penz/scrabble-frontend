@@ -59,6 +59,7 @@ export default function ModalProvider({ children }: Props) {
 				id={modalId}
 				className="modal-toggle"
 				checked={show}
+				onChange={()=>{}}
 			/>
 			<div className="modal modal-bottom sm:modal-middle">
 				<div className="modal-box">

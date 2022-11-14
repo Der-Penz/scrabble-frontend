@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GameInfo } from '../../types/GameTypes';
 import { Objective, RoomSetting } from '../../types/RoomSetting';
-import { formatMillis } from '../../util/helpers';
+import { formatMillis } from '../../util/Helpers';
 import PlayerInfo from './PlayerInfo';
 // @ts-ignore
 import classNames from 'clean-react-classnames';
@@ -11,9 +11,14 @@ type GameInfoProps = {
 	settings?: RoomSetting;
 };
 
-export default function GameInfoDisplay({ gameInfo, settings }: GameInfoProps) {
-	if (!gameInfo) return <div></div>;
-
+export default function GameInfoDisplay({
+	gameInfo = {
+		currentPlayer: '-',
+		players: { '-': { points: 0, timeLeft: 0 } },
+		timeToPlay: 0,
+	},
+	settings,
+}: GameInfoProps) {
 	const [timePast, setTimePast] = useState(0);
 	const [time, setTime] = useState({} as ReturnType<typeof formatMillis>);
 
