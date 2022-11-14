@@ -15,42 +15,43 @@ type InputDisplayProps = {
 
 export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 	const message = useMessage();
-	const showModal = useModal();
+	const { showModal, state: selectedTradeTiles } = useModal<Set<number>>(
+		new Set()
+	);
 	const [selected, setSelected] = useState<number>();
 
 	const TradeElement = (
 		<div className="flex flex-col gap-2 items-center">
 			<span className="block">select the tiles you wanna trade</span>
 			<div className="flex gap-2">
-				{/* {bench.tilesOnHand.map((tile, i) => (
-					<div className="flex flex-col gap-2 items-center">
+				{bench.tilesOnHand.map((tile, i) => (
+					<div key={i} className="flex flex-col gap-2 items-center">
 						<LetterTile
-							key={i}
 							tile={tile}
 							displayPoints={true}
 							tooltip={false}
+							onClick={(e : React.MouseEvent<HTMLDivElement>) => {
+								if (selectedTradeTiles.current.has(i)) {
+									selectedTradeTiles.current.delete(i);
+								} else {
+									selectedTradeTiles.current.add(i);
+								}
+							}}
 							className={'hover:border-info kbd-xs'}
 						/>
 						<input
 							type="checkbox"
-							defaultChecked={false}
 							className="checkbox"
-							onChange={(
-								e: React.ChangeEvent<HTMLInputElement>
-							) => {
-								console.log(selected);
-								
-								setSelected((prev) => [
-									...new Set([...prev, i]),
-								]);
+							onChange={(e : React.ChangeEvent<HTMLInputElement>) => {
 								if (e.target.checked) {
-								}else{
-									setSelected(prev => prev.filter((number) => number !== i));
+									selectedTradeTiles.current.add(i);
+								} else {
+									selectedTradeTiles.current.delete(i);
 								}
 							}}
 						/>
 					</div>
-				))} */}
+				))}
 			</div>
 		</div>
 	);
@@ -62,7 +63,9 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 			acceptButton: {
 				content: 'trade',
 				onAccept: () => {
-					// message(new WSRequest('game:move:trade', {}));
+					const toTrade = [...selectedTradeTiles.current.values()].map(i => bench.tilesOnHand[i].char)
+
+					message(new WSRequest('game:move:trade', toTrade));
 				},
 			},
 			deniedButton: {
@@ -130,10 +133,7 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 						tile={tile}
 						displayPoints={true}
 						tooltip={false}
-						className={classNames(
-							{ 'border-info scale-110': selected === i },
-						)}
-						onClick={() => selectTile(i)}
+						className={'hover:border-info'}
 					/>
 				))}
 			</section>

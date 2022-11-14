@@ -1,14 +1,20 @@
-import { useContext } from 'react';
-import { ModalContext } from '../contexts/ModalContext';
+import { useContext, useRef } from 'react';
+import { Modal, ModalContext } from '../contexts/ModalContext';
 
-const useModal = () => {
+const useModal = <T extends unknown>(defaultState: T) => {
 	const modalContext = useContext(ModalContext);
+	const state = useRef<T>(defaultState);
 
 	if (modalContext === undefined) {
 		throw new Error('useModal must be within ModalProvider');
 	}
 
-	return modalContext;
+	const showModal = (modal: Modal) => {
+		state.current = defaultState;
+		modalContext(modal);
+	};
+
+	return { showModal, state };
 };
 
 export default useModal;

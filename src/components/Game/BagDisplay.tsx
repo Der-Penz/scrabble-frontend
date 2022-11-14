@@ -1,3 +1,4 @@
+import React from 'react'
 import { Bag } from '../../types/GameTypes';
 import LetterTile from './LetterTile';
 import { IoBag } from 'react-icons/io5';
@@ -24,7 +25,7 @@ export default function BagDisplay({ bag }: BagDisplayProps) {
 			</h1>
 			<ul className="flex flex-wrap gap-2">
 				{tiles.map((tile, i, array) => (
-					<div key={i}>
+					<React.Fragment key={i}>
 						{i > 0 && array[i - 1].char !== tile.char && (
 							<div className="mx-1"></div>
 						)}
@@ -33,7 +34,7 @@ export default function BagDisplay({ bag }: BagDisplayProps) {
 							tooltip={true}
 							displayPoints={false}
 						/>
-					</div>
+					</React.Fragment>
 				))}
 			</ul>
 		</div>

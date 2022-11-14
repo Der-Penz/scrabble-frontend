@@ -4,7 +4,7 @@ type Props = {
 	children?: ReactNode;
 };
 
-type Modal = {
+export type Modal = {
 	title?: string;
 	content: JSX.Element | string;
 	acceptButton: {
