@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import useAction from '../../hooks/useAction';
-import { Bench, Board } from '../../types/GameTypes';
+import { Bench, Board, BoardPosition, Tile } from '../../types/GameTypes';
 import { Bag, GameInfo } from '../../types/GameTypes';
 import { RoomSetting } from '../../types/RoomSetting';
 import BagDisplay from './BagDisplay';
 import BoardDisplay from './BoardDisplay';
 import GameInfoDisplay from './GameInfoDisplay';
 import InputDisplay from './InputDisplay';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 type ScrabbleProps = {
 	settings?: RoomSetting;
@@ -22,7 +24,7 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		points: 0,
 	});
 	const [gameInfo, setGameInfo] = useState<GameInfo>();
-	const [currentPlayer, setCurrentPlayer] = useState('');
+	const [placedTiles, setPlacedTiles] = useState<BoardPosition[]>([]);
 
 	useAction<{
 		bag: Bag;
@@ -37,7 +39,6 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 			players: message.message.players,
 		});
 		setBag(message.message.bag);
-		setCurrentPlayer(message.message.currentPlayer);
 	});
 
 	useAction<{ currentPlayer: string; bench: Bench }>(
@@ -47,14 +48,37 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		}
 	);
 
+	const dropTile = (tile: Tile, position: BoardPosition) => {
+		console.log('dropping', tile.char, 'off', position);
+
+		if (position.placedTile !== null) {
+			console.log('returnng');
+
+			return;
+		}
+
+		const newTilePosition = { ...position };
+		newTilePosition.placedTile = { ...tile };
+
+		setPlacedTiles((prev) => [...prev, newTilePosition]);
+	};
+
+	const tilesOnHand = useMemo<Tile[]>(() =>{
+		return [];
+	}, [bench, placedTiles])
+	
+
 	return (
 		<section className="flex flex-row gap-2">
 			<section className="flex flex-col gap-2 mx-auto">
-				<BoardDisplay board={board} />
-				<InputDisplay
-					bench={bench}
-					onTurn={gameInfo?.currentPlayer === bench.owner}
-				/>
+				<DndProvider backend={HTML5Backend}>
+					<BoardDisplay board={board} onDrop={dropTile} />
+					<InputDisplay
+						tiles={tilesOnHand}
+						bench={bench}
+						onTurn={gameInfo?.currentPlayer === bench.owner}
+					/>
+				</DndProvider>
 			</section>
 			<section className="flex flex-col gap-2 ml-auto">
 				<GameInfoDisplay gameInfo={gameInfo} settings={settings} />
