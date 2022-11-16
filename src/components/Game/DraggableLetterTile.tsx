@@ -12,18 +12,17 @@ type LetterTileProps = {
 };
 
 export default function DraggableLetterTile(props: LetterTileProps) {
-
 	const [{ opacity }, dragRef] = useDrag(
 		() => ({
-		  type: 'tile',
-		  item: props.tile,
-		  collect: (monitor) => ({
-			opacity: monitor.isDragging() ? 'opacity-10' : 'opacity-100'
-		  })
+			type: 'tile',
+			item: props.tile,
+			collect: (monitor) => ({
+				opacity: monitor.isDragging() ? 'opacity-10' : 'opacity-100',
+			}),
 		}),
-		[]
-	  )
-    
+		[props]
+	);
+
 	return (
 		<div className={opacity} ref={dragRef}>
 			<LetterTile {...props}></LetterTile>

@@ -41,7 +41,7 @@ export default function BoardTile({ pos, onDrop }: BoardTileProps) {
 			)}
 		>
 			{pos.placedTile && (
-				<span className="font-bold">{pos.placedTile?.char}</span>
+				<span className="font-bold">{pos.placedTile.as || pos.placedTile?.char}</span>
 			)}
 			{!pos.placedTile && pos.type && (
 				<span className={classNames('text-xs')}>

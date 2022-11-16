@@ -1,19 +1,27 @@
 import { useState } from 'react';
 import useMessage from '../../hooks/useMessage';
-import { Bench } from '../../types/GameTypes';
+import { Bench, Tile } from '../../types/GameTypes';
 import { WSRequest } from '../../types/WSRequest';
 import LetterTile from './LetterTile';
 import { FaAngleDoubleDown } from 'react-icons/fa';
 import useModal from '../../hooks/useModal';
 // @ts-ignore
 import classNames from 'clean-react-classnames';
+import DraggableLetterTile from './DraggableLetterTile';
 
 type InputDisplayProps = {
 	bench: Bench;
+	tiles: Tile[];
+	takeTilesBack: any;
 	onTurn: boolean;
 };
 
-export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
+export default function InputDisplay({
+	bench,
+	onTurn,
+	tiles,
+	takeTilesBack,
+}: InputDisplayProps) {
 	const message = useMessage();
 	const { showModal, state: selectedTradeTiles } = useModal<Set<number>>(
 		new Set()
@@ -24,13 +32,13 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 		<div className="flex flex-col gap-2 items-center">
 			<span className="block">select the tiles you wanna trade</span>
 			<div className="flex gap-2">
-				{bench.tilesOnHand.map((tile, i) => (
+				{tiles.map((tile, i) => (
 					<div key={i} className="flex flex-col gap-2 items-center">
 						<LetterTile
 							tile={tile}
 							displayPoints={true}
 							tooltip={false}
-							onClick={(e : React.MouseEvent<HTMLDivElement>) => {
+							onClick={(e: React.MouseEvent<HTMLDivElement>) => {
 								if (selectedTradeTiles.current.has(i)) {
 									selectedTradeTiles.current.delete(i);
 								} else {
@@ -42,7 +50,9 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 						<input
 							type="checkbox"
 							className="checkbox"
-							onChange={(e : React.ChangeEvent<HTMLInputElement>) => {
+							onChange={(
+								e: React.ChangeEvent<HTMLInputElement>
+							) => {
 								if (e.target.checked) {
 									selectedTradeTiles.current.add(i);
 								} else {
@@ -63,7 +73,9 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 			acceptButton: {
 				content: 'trade',
 				onAccept: () => {
-					const toTrade = [...selectedTradeTiles.current.values()].map(i => bench.tilesOnHand[i].char)
+					const toTrade = [
+						...selectedTradeTiles.current.values(),
+					].map((i) => bench.tilesOnHand[i].char);
 
 					message(new WSRequest('game:move:trade', toTrade));
 				},
@@ -115,8 +127,6 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 		});
 	};
 
-	const takeTilesBack = () => {};
-
 	const selectTile = (index: number) => {
 		setSelected(selected === index ? -1 : index);
 	};
@@ -124,13 +134,22 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 	return (
 		<div>
 			<section className="bg-base-300 rounded-lg my-2 flex flex-row justify-center gap-2 p-2">
-				<button onClick={takeTilesBack} className="btn btn-info">
+				<button
+					onClick={takeTilesBack}
+					className={classNames(
+						{
+							'btn-disabled':
+								bench.tilesOnHand.length === tiles.length,
+						},
+						'btn btn-info'
+					)}
+				>
 					<FaAngleDoubleDown size={'1.3rem'} />
 				</button>
-				{bench.tilesOnHand.map((tile, i) => (
-					<LetterTile
+				{tiles.map((tilesman, i) => (
+					<DraggableLetterTile
 						key={i}
-						tile={tile}
+						tile={tilesman}
 						displayPoints={true}
 						tooltip={false}
 						className={'hover:border-info'}

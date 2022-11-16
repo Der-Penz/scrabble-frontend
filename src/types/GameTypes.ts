@@ -1,6 +1,7 @@
 export type Tile = {
 	char: string;
 	points: number;
+	as?: string;
 };
 
 export type BoardPosition = {
