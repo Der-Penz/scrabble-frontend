@@ -27,6 +27,7 @@ export default function BoardDisplay({
 									key={`${i}${j}`}
 									pos={placedTile}
 									onDrop={onDrop}
+									draggable={true}
 								/>
 							);
 						} else {

@@ -1,21 +1,15 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { Tile } from '../../types/GameTypes';
-import LetterTile from './LetterTile';
+import LetterTile, { LetterTileProps } from './LetterTile';
 
-type LetterTileProps = {
-	tile: Tile;
-	tooltip: boolean;
-	displayPoints: boolean;
-	className?: string;
-	onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-};
+type DraggableLetterTileProps =  LetterTileProps & {draggable: boolean};
 
-export default function DraggableLetterTile(props: LetterTileProps) {
+export default function DraggableLetterTile(props: DraggableLetterTileProps) {
 	const [{ opacity }, dragRef] = useDrag(
 		() => ({
 			type: 'tile',
 			item: props.tile,
+			canDrag: props.draggable,
 			collect: (monitor) => ({
 				opacity: monitor.isDragging() ? 'opacity-10' : 'opacity-100',
 			}),

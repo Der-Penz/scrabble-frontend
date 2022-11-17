@@ -149,6 +149,7 @@ export default function InputDisplay({
 				{tiles.map((tilesman, i) => (
 					<DraggableLetterTile
 						key={i}
+						draggable={true}
 						tile={tilesman}
 						displayPoints={true}
 						tooltip={false}
