@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import useMessage from '../../hooks/useMessage';
-import { Bench, Tile } from '../../types/GameTypes';
+import { Bench, BoardPosition, Tile } from '../../types/GameTypes';
 import { WSRequest } from '../../types/WSRequest';
 import LetterTile from './LetterTile';
 import { FaAngleDoubleDown } from 'react-icons/fa';
@@ -11,28 +11,43 @@ import DraggableLetterTile from './DraggableLetterTile';
 
 type InputDisplayProps = {
 	bench: Bench;
-	tiles: Tile[];
-	takeTilesBack: any;
+	placedTiles: (Tile |null)[];
+	takeTilesBack: () => void;
 	onTurn: boolean;
 };
 
 export default function InputDisplay({
 	bench,
 	onTurn,
-	tiles,
+	placedTiles,
 	takeTilesBack,
 }: InputDisplayProps) {
 	const message = useMessage();
 	const { showModal, state: selectedTradeTiles } = useModal<Set<number>>(
 		new Set()
 	);
-	const [selected, setSelected] = useState<number>();
+
+	const tilesOnHand = useMemo<Tile[]>(() => {
+		const toFilter = placedTiles.map((pos) => pos?.char || '-');
+		const allTiles = bench.tilesOnHand;
+
+		const filtered = allTiles.reduce((filtered, tile) => {
+			if (toFilter.includes(tile.char)) {
+				toFilter.splice(toFilter.indexOf(tile.char), 1);
+				return filtered;
+			}
+
+			return [...filtered, tile];
+		}, [] as Tile[]);
+
+		return filtered;
+	}, [bench, placedTiles]);
 
 	const TradeElement = (
 		<div className="flex flex-col gap-2 items-center">
 			<span className="block">select the tiles you wanna trade</span>
 			<div className="flex gap-2">
-				{tiles.map((tile, i) => (
+				{bench.tilesOnHand.map((tile, i) => (
 					<div key={i} className="flex flex-col gap-2 items-center">
 						<LetterTile
 							tile={tile}
@@ -127,10 +142,6 @@ export default function InputDisplay({
 		});
 	};
 
-	const selectTile = (index: number) => {
-		setSelected(selected === index ? -1 : index);
-	};
-
 	return (
 		<div>
 			<section className="bg-base-300 rounded-lg my-2 flex flex-row justify-center gap-2 p-2">
@@ -139,18 +150,18 @@ export default function InputDisplay({
 					className={classNames(
 						{
 							'btn-disabled':
-								bench.tilesOnHand.length === tiles.length,
+								bench.tilesOnHand.length === placedTiles.length,
 						},
 						'btn btn-info'
 					)}
 				>
 					<FaAngleDoubleDown size={'1.3rem'} />
 				</button>
-				{tiles.map((tilesman, i) => (
+				{tilesOnHand.map((tile, i) => (
 					<DraggableLetterTile
 						key={i}
 						draggable={true}
-						tile={tilesman}
+						tile={tile}
 						displayPoints={true}
 						tooltip={false}
 						className={'hover:border-info'}

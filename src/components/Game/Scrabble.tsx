@@ -138,7 +138,7 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 				<DndProvider backend={HTML5Backend}>
 					<BoardDisplay board={board} placedTiles={placedTiles} onDrop={dropTile} />
 					<InputDisplay
-						tiles={tilesOnHand}
+						placedTiles={placedTiles.map(pos => pos.placedTile)}
 						bench={bench}
 						onTurn={gameInfo?.currentPlayer === bench.owner}
 						takeTilesBack={takeTilesBack}
