@@ -44,22 +44,6 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		return filtered;
 	}, [bench, placedTiles]);
 
-	const filledBoard = useMemo(() => {
-		const ghostBoard: BoardPosition[][] = [];
-
-		board.forEach((row, x) => {
-			ghostBoard[x] = [] as BoardPosition[];
-			row.forEach((tile, y) => {
-				ghostBoard[x][y] = { ...tile };
-			});
-		});
-
-		placedTiles.forEach((pos) => {
-			ghostBoard[pos.x][pos.y].placedTile = pos.placedTile;
-		});
-		return ghostBoard;
-	}, [board, placedTiles]);
-
 	useAction<{
 		bag: Bag;
 		board: Board;
@@ -147,7 +131,7 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		<section className="flex flex-row gap-2">
 			<section className="flex flex-col gap-2 mx-auto">
 				<DndProvider backend={HTML5Backend}>
-					<BoardDisplay board={filledBoard} onDrop={dropTile} />
+					<BoardDisplay board={board} placedTiles={placedTiles} onDrop={dropTile} />
 					<InputDisplay
 						tiles={tilesOnHand}
 						bench={bench}
