@@ -150,9 +150,9 @@ export default function InputDisplay({
 					className={classNames(
 						{
 							'btn-disabled':
-								bench.tilesOnHand.length === placedTiles.length,
+								bench.tilesOnHand.length === tilesOnHand.length,
 						},
-						'btn btn-info'
+						'btn btn-info mr-auto'
 					)}
 				>
 					<FaAngleDoubleDown size={'1.3rem'} />
