@@ -68,24 +68,37 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 	);
 
 	const dropTile = useCallback(
-		(tile: Tile, position: BoardPosition) => {
+		(tile: Tile & { x?: number; y?: number }, position: BoardPosition) => {
 			if (position.placedTile !== null) {
 				return;
 			}
 
-			setPlacedTiles(prev => {
-				if(prev.some(
-					(pos) => pos.x === position.x && pos.y === position.y
-				)) {
+			setPlacedTiles((prev) => {
+				if (
+					prev.some(
+						(pos) => pos.x === position.x && pos.y === position.y
+					)
+				) {
 					return prev;
+				}
+
+				if (tile.x && tile.y) {
+					const newTilePosition = { ...position };
+					newTilePosition.placedTile = { ...tile };
+					return [
+						...prev.filter(
+							(pos) => pos.x !== tile.x && pos.y !== tile.y
+						),
+						newTilePosition,
+					];
 				}
 
 				const newTilePosition = { ...position };
 				newTilePosition.placedTile = { ...tile };
 
 				return [...prev, newTilePosition];
-			})
-	
+			});
+
 			// if (tile.char === '0') {
 			// 	showModal({
 			// 		title: 'Activate joker',
@@ -118,15 +131,9 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 			// 			},
 			// 		},
 			// 	});
-			// } else {
-			// 	const newTilePosition = { ...position };
-			// 	newTilePosition.placedTile = { ...tile };
-			// 	setPlacedTiles((prev) => [...prev, newTilePosition]);
-			// }
-	  },
-	  [placedTiles, board, state],
-	)
-	
+		},
+		[placedTiles, board, state]
+	);
 
 	const takeTilesBack = () => {
 		setPlacedTiles([]);
@@ -136,9 +143,13 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		<section className="flex flex-row gap-2">
 			<section className="flex flex-col gap-2 mx-auto">
 				<DndProvider backend={HTML5Backend}>
-					<BoardDisplay board={board} placedTiles={placedTiles} onDrop={dropTile} />
+					<BoardDisplay
+						board={board}
+						placedTiles={placedTiles}
+						onDrop={dropTile}
+					/>
 					<InputDisplay
-						placedTiles={placedTiles.map(pos => pos.placedTile)}
+						placedTiles={placedTiles.map((pos) => pos.placedTile)}
 						bench={bench}
 						onTurn={gameInfo?.currentPlayer === bench.owner}
 						takeTilesBack={takeTilesBack}

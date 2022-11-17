@@ -54,6 +54,7 @@ export default function BoardTile({
 					tooltip={false}
 					size="kbd-md"
 					displayJokerValue
+					coords={{ x: pos.x, y: pos.y }}
 				/>
 			)}
 			{!pos.placedTile && pos.type && (
