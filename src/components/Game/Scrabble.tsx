@@ -72,52 +72,57 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 			if (position.placedTile !== null) {
 				return;
 			}
-	
-			if (
-				placedTiles.some(
+
+			setPlacedTiles(prev => {
+				if(prev.some(
 					(pos) => pos.x === position.x && pos.y === position.y
-				)
-			) {
-				return;
-			}
-	
-			if (tile.char === '0') {
-				showModal({
-					title: 'Activate joker',
-					content: (
-						<div className="grid place-items-center">
-							<span>
-								Enter a valid char to redeem your joker in this one
-							</span>
-							<input
-								className="input input-primary"
-								type="text"
-								placeholder="Enter a char"
-								onChange={(e) => {
-									if (e.target.value.at(0)?.match(/[A-Z]/)) {
-										state.current = e.target.value.at(0)!;
-									} else {
-										state.current = 'A';
-									}
-								}}
-							/>
-						</div>
-					),
-					acceptButton: {
-						content: 'activate',
-						onAccept: () => {
-							tile.as = state.current;
-							const newTilePosition = { ...position };
-							newTilePosition.placedTile = { ...tile };
-							setPlacedTiles((prev) => [...prev, newTilePosition]);
-						},
-					},
-				});
-			} else {
+				)) {
+					return prev;
+				}
+
 				const newTilePosition = { ...position };
 				newTilePosition.placedTile = { ...tile };
-				setPlacedTiles((prev) => [...prev, newTilePosition]);
-			}
+
+				return [...prev, newTilePosition];
+			})
+	
+			// if (tile.char === '0') {
+			// 	showModal({
+			// 		title: 'Activate joker',
+			// 		content: (
+			// 			<div className="grid place-items-center">
+			// 				<span>
+			// 					Enter a valid char to redeem your joker in this one
+			// 				</span>
+			// 				<input
+			// 					className="input input-primary"
+			// 					type="text"
+			// 					placeholder="Enter a char"
+			// 					onChange={(e) => {
+			// 						if (e.target.value.at(0)?.match(/[A-Z]/)) {
+			// 							state.current = e.target.value.at(0)!;
+			// 						} else {
+			// 							state.current = 'A';
+			// 						}
+			// 					}}
+			// 				/>
+			// 			</div>
+			// 		),
+			// 		acceptButton: {
+			// 			content: 'activate',
+			// 			onAccept: () => {
+			// 				tile.as = state.current;
+			// 				const newTilePosition = { ...position };
+			// 				newTilePosition.placedTile = { ...tile };
+			// 				setPlacedTiles((prev) => [...prev, newTilePosition]);
+			// 			},
+			// 		},
+			// 	});
+			// } else {
+			// 	const newTilePosition = { ...position };
+			// 	newTilePosition.placedTile = { ...tile };
+			// 	setPlacedTiles((prev) => [...prev, newTilePosition]);
+			// }
 	  },
 	  [placedTiles, board, state],
 	)
