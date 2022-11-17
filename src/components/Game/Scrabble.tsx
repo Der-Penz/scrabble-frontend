@@ -149,7 +149,7 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 						onDrop={dropTile}
 					/>
 					<InputDisplay
-						placedTiles={placedTiles.map((pos) => pos.placedTile)}
+						placedTiles={placedTiles}
 						bench={bench}
 						onTurn={gameInfo?.currentPlayer === bench.owner}
 						takeTilesBack={takeTilesBack}

@@ -11,7 +11,7 @@ import DraggableLetterTile from './DraggableLetterTile';
 
 type InputDisplayProps = {
 	bench: Bench;
-	placedTiles: (Tile |null)[];
+	placedTiles: BoardPosition[];
 	takeTilesBack: () => void;
 	onTurn: boolean;
 };
@@ -28,7 +28,7 @@ export default function InputDisplay({
 	);
 
 	const tilesOnHand = useMemo<Tile[]>(() => {
-		const toFilter = placedTiles.map((pos) => pos?.char || '-');
+		const toFilter = placedTiles.map((pos) => pos.placedTile?.char || '-');
 		const allTiles = bench.tilesOnHand;
 
 		const filtered = allTiles.reduce((filtered, tile) => {
@@ -121,7 +121,16 @@ export default function InputDisplay({
 	};
 
 	const place = () => {
-		message(new WSRequest('game:move:place', {}));
+		message(
+			new WSRequest(
+				'game:move:place',
+				placedTiles.map((pos) => ({
+					x: pos.x,
+					y: pos.y,
+					char: pos.placedTile?.as || pos.placedTile?.char,
+				}))
+			)
+		);
 	};
 
 	const forfeit = () => {
