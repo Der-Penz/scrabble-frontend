@@ -16,6 +16,7 @@ export default function BoardTile({
 	onDrop,
 	draggable = false,
 }: BoardTileProps) {
+
 	const [{ isOver }, drop] = useDrop(
 		() => ({
 			accept: 'tile',
@@ -26,7 +27,7 @@ export default function BoardTile({
 				isOver: !!monitor.isOver(),
 			}),
 		}),
-		[pos.x, pos.y]
+		[pos]
 	);
 
 	return (

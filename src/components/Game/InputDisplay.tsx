@@ -8,11 +8,12 @@ import useModal from '../../hooks/useModal';
 // @ts-ignore
 import classNames from 'clean-react-classnames';
 import DraggableLetterTile from './DraggableLetterTile';
+import { useDrop } from 'react-dnd';
 
 type InputDisplayProps = {
 	bench: Bench;
 	placedTiles: BoardPosition[];
-	takeTilesBack: () => void;
+	takeTilesBack: (tile?: Tile & { x: number; y: number }) => void;
 	onTurn: boolean;
 };
 
@@ -26,6 +27,22 @@ export default function InputDisplay({
 	const { showModal, state: selectedTradeTiles } = useModal<Set<number>>(
 		new Set()
 	);
+
+	const [{ isOver }, drop] = useDrop(() => ({
+		accept: 'tile',
+		drop: (item: Tile & { x: number; y: number }) => {
+			console.log(item);
+			if (!item.x) {
+				return;
+			}
+			takeTilesBack(item);
+		},
+		collect: (monitor) => ({
+			isOver:
+				!!monitor.isOver() &&
+				(monitor.getItem() as Tile & { x: number; y: number }).x,
+		}),
+	}));
 
 	const tilesOnHand = useMemo<Tile[]>(() => {
 		const toFilter = placedTiles.map((pos) => pos.placedTile?.char || '-');
@@ -153,9 +170,15 @@ export default function InputDisplay({
 
 	return (
 		<div>
-			<section className="bg-base-300 rounded-lg my-2 flex flex-row justify-center gap-2 p-2">
+			<section
+				ref={drop}
+				className={classNames(
+					{ 'scale-95': isOver },
+					'bg-base-300 transition-transform rounded-lg my-2 flex flex-row justify-center gap-2 p-2'
+				)}
+			>
 				<button
-					onClick={takeTilesBack}
+					onClick={() => takeTilesBack()}
 					className={classNames(
 						{
 							'btn-disabled':
