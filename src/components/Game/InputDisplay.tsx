@@ -1,24 +1,64 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import useMessage from '../../hooks/useMessage';
-import { Bench } from '../../types/GameTypes';
+import { Bench, BoardPosition, Tile } from '../../types/GameTypes';
 import { WSRequest } from '../../types/WSRequest';
 import LetterTile from './LetterTile';
 import { FaAngleDoubleDown } from 'react-icons/fa';
 import useModal from '../../hooks/useModal';
 // @ts-ignore
 import classNames from 'clean-react-classnames';
+import DraggableLetterTile from './DraggableLetterTile';
+import { useDrop } from 'react-dnd';
 
 type InputDisplayProps = {
 	bench: Bench;
+	placedTiles: BoardPosition[];
+	takeTilesBack: (tile?: Tile & { x: number; y: number }) => void;
 	onTurn: boolean;
 };
 
-export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
+export default function InputDisplay({
+	bench,
+	onTurn,
+	placedTiles,
+	takeTilesBack,
+}: InputDisplayProps) {
 	const message = useMessage();
 	const { showModal, state: selectedTradeTiles } = useModal<Set<number>>(
 		new Set()
 	);
-	const [selected, setSelected] = useState<number>();
+
+	const [{ isOver }, drop] = useDrop(() => ({
+		accept: 'tile',
+		drop: (item: Tile & { x: number; y: number }) => {
+			console.log(item);
+			if (!item.x) {
+				return;
+			}
+			takeTilesBack(item);
+		},
+		collect: (monitor) => ({
+			isOver:
+				!!monitor.isOver() &&
+				(monitor.getItem() as Tile & { x: number; y: number }).x,
+		}),
+	}));
+
+	const tilesOnHand = useMemo<Tile[]>(() => {
+		const toFilter = placedTiles.map((pos) => pos.placedTile?.char || '-');
+		const allTiles = bench.tilesOnHand;
+
+		const filtered = allTiles.reduce((filtered, tile) => {
+			if (toFilter.includes(tile.char)) {
+				toFilter.splice(toFilter.indexOf(tile.char), 1);
+				return filtered;
+			}
+
+			return [...filtered, tile];
+		}, [] as Tile[]);
+
+		return filtered;
+	}, [bench, placedTiles]);
 
 	const TradeElement = (
 		<div className="flex flex-col gap-2 items-center">
@@ -30,7 +70,7 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 							tile={tile}
 							displayPoints={true}
 							tooltip={false}
-							onClick={(e : React.MouseEvent<HTMLDivElement>) => {
+							onClick={(e: React.MouseEvent<HTMLDivElement>) => {
 								if (selectedTradeTiles.current.has(i)) {
 									selectedTradeTiles.current.delete(i);
 								} else {
@@ -42,7 +82,9 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 						<input
 							type="checkbox"
 							className="checkbox"
-							onChange={(e : React.ChangeEvent<HTMLInputElement>) => {
+							onChange={(
+								e: React.ChangeEvent<HTMLInputElement>
+							) => {
 								if (e.target.checked) {
 									selectedTradeTiles.current.add(i);
 								} else {
@@ -63,7 +105,9 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 			acceptButton: {
 				content: 'trade',
 				onAccept: () => {
-					const toTrade = [...selectedTradeTiles.current.values()].map(i => bench.tilesOnHand[i].char)
+					const toTrade = [
+						...selectedTradeTiles.current.values(),
+					].map((i) => bench.tilesOnHand[i].char);
 
 					message(new WSRequest('game:move:trade', toTrade));
 				},
@@ -94,7 +138,16 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 	};
 
 	const place = () => {
-		message(new WSRequest('game:move:place', {}));
+		message(
+			new WSRequest(
+				'game:move:place',
+				placedTiles.map((pos) => ({
+					x: pos.x,
+					y: pos.y,
+					char: pos.placedTile?.as || pos.placedTile?.char,
+				}))
+			)
+		);
 	};
 
 	const forfeit = () => {
@@ -115,21 +168,31 @@ export default function InputDisplay({ bench, onTurn }: InputDisplayProps) {
 		});
 	};
 
-	const takeTilesBack = () => {};
-
-	const selectTile = (index: number) => {
-		setSelected(selected === index ? -1 : index);
-	};
-
 	return (
 		<div>
-			<section className="bg-base-300 rounded-lg my-2 flex flex-row justify-center gap-2 p-2">
-				<button onClick={takeTilesBack} className="btn btn-info">
+			<section
+				ref={drop}
+				className={classNames(
+					{ 'scale-95': isOver },
+					'bg-base-300 transition-transform rounded-lg my-2 flex flex-row justify-center gap-2 p-2'
+				)}
+			>
+				<button
+					onClick={() => takeTilesBack()}
+					className={classNames(
+						{
+							'btn-disabled':
+								bench.tilesOnHand.length === tilesOnHand.length,
+						},
+						'btn btn-info mr-auto'
+					)}
+				>
 					<FaAngleDoubleDown size={'1.3rem'} />
 				</button>
-				{bench.tilesOnHand.map((tile, i) => (
-					<LetterTile
+				{tilesOnHand.map((tile, i) => (
+					<DraggableLetterTile
 						key={i}
+						draggable={true}
 						tile={tile}
 						displayPoints={true}
 						tooltip={false}

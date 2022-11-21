@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "clean-react-classnames": "^1.0.0",
-    "daisyui": "^2.40.1",
+    "daisyui": "^2.41.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",
     "react-router-dom": "^6.4.3",
@@ -22,13 +25,13 @@
   "devDependencies": {
     "@types/react": "^18.0.25",
     "@types/react-beautiful-dnd": "^13.1.2",
-    "@types/react-dom": "^18.0.8",
+    "@types/react-dom": "^18.0.9",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^2.2.0",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",
     "tailwindcss": "^3.2.4",
-    "typescript": "^4.8.4",
-    "vite": "^3.2.3"
+    "typescript": "^4.9.3",
+    "vite": "^3.2.4"
   }
 }
