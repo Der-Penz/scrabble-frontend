@@ -179,7 +179,7 @@ export default function InputDisplay({
 	};
 
 	return (
-		<div>
+		<div className='min-w-min w-1/2 max-w-xl'>
 			<section
 				ref={drop}
 				className={classNames(

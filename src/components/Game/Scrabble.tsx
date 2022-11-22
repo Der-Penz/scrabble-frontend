@@ -9,7 +9,6 @@ import GameInfoDisplay from './GameInfoDisplay';
 import InputDisplay from './InputDisplay';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import useModal from '../../hooks/useModal';
 
 type ScrabbleProps = {
 	settings?: RoomSetting;
@@ -122,7 +121,7 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 
 	return (
 		<section className="flex flex-row gap-2">
-			<section className="flex flex-col gap-2 mx-auto">
+			<section className="flex flex-col gap-2 mx-auto flex-[2] items-center">
 				<DndProvider backend={HTML5Backend}>
 					<BoardDisplay
 						board={board}
@@ -137,7 +136,7 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 					/>
 				</DndProvider>
 			</section>
-			<section className="flex flex-col gap-2 ml-auto">
+			<section className="flex flex-col gap-2 ml-auto flex-1">
 				<GameInfoDisplay gameInfo={gameInfo} settings={settings} />
 				<BagDisplay bag={bag} />
 			</section>

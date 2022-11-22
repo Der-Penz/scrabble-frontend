@@ -24,7 +24,6 @@ export default function Navbar() {
 				<option value="luxury">Luxury</option>
 				<option value="fantasy">Fantasy</option>
 				<option value="night">Night</option>
-				<option value="coffee">Coffee</option>
 				<option value="autumn">Autumn</option>
 				<option value="synthwave">Synthwave</option>
 			</select>

@@ -59,10 +59,20 @@ export default function PlayerInfo({
 					</span>
 				</span>
 			)}
-			<span className="stat-title overflow-ellipsis whitespace-nowrap overflow-hidden w-[15ch]">
+			<span
+				className={classNames(
+					onTurn && 'text-primary opacity-100',
+					'stat-title text-xl font-bold overflow-ellipsis whitespace-nowrap overflow-hidden w-[15ch]'
+				)}
+			>
 				{name}:
 			</span>
-			<div className="divider"></div>
+			<div
+				className={classNames(
+					onTurn && 'before:bg-primary after:bg-primary',
+					'divider mt-1 mb-2'
+				)}
+			></div>
 			<span className="stat-value">{points}</span>
 		</div>
 	);

@@ -15,7 +15,6 @@ export default function BoardTile({
 	onDrop,
 	draggable = false,
 }: BoardTileProps) {
-
 	const [{ isOver }, drop] = useDrop(
 		() => ({
 			accept: 'tile',
@@ -34,14 +33,14 @@ export default function BoardTile({
 			ref={drop}
 			className={classNames(
 				{ 'scale-110': isOver },
-				'kbd flex-1 aspect-square select-none grid place-items-center border',
+				'flex-1 aspect-square select-none grid place-items-center border-base-content border border-opacity-10 rounded-lg w-[2.6rem] transition-transform',
 				{
-					'bg-secondary bg-opacity-70':
+					'bg-blue-600':
 						pos.type === 'LETTER' && pos.factor === 2,
-					'bg-secondary': pos.type === 'LETTER' && pos.factor === 3,
-					'bg-primary bg-opacity-70':
+					'bg-blue-700': pos.type === 'LETTER' && pos.factor === 3,
+					'bg-red-600':
 						pos.type === 'WORD' && pos.factor === 2,
-					'bg-primary ': pos.type === 'WORD' && pos.factor === 3,
+					'bg-red-700': pos.type === 'WORD' && pos.factor === 3,
 					'bg-base-100': !pos.type,
 				}
 			)}
@@ -58,8 +57,8 @@ export default function BoardTile({
 				/>
 			)}
 			{!pos.placedTile && pos.type && (
-				<span className={classNames('text-xs')}>
-					{pos.factor === 2 ? 'D' : 'T'}
+				<span className={classNames('text-xs opacity-80 font-bold')}>
+					{pos.factor === 2 ? '2' : '3'}
 					{pos.type === 'LETTER' ? 'L' : 'W'}
 				</span>
 			)}

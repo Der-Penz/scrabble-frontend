@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Bag } from '../../types/GameTypes';
 import LetterTile from './LetterTile';
 import { IoBag } from 'react-icons/io5';
@@ -33,6 +33,7 @@ export default function BagDisplay({ bag }: BagDisplayProps) {
 							tile={tile}
 							tooltip={true}
 							displayPoints={false}
+							size="kbd-md"
 						/>
 					</React.Fragment>
 				))}

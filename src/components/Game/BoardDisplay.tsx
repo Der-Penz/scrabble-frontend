@@ -13,7 +13,7 @@ export default function BoardDisplay({
 	placedTiles,
 }: BoardProps) {
 	return (
-		<div className="flex flex-row gap-1 bg-base-300 rounded-md p-2 border-neutral border-4">
+		<div className="flex flex-row gap-1 bg-base-300 rounded-md p-2 border-neutral border-4 aspect-square max-w-[44rem] mx-auto">
 			{board.map((row, i) => (
 				<div key={i} className="grid gap-1 flex-1">
 					{row.map((pos, j) => {
