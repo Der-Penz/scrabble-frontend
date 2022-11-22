@@ -9,12 +9,16 @@ import GameInfoDisplay from './GameInfoDisplay';
 import InputDisplay from './InputDisplay';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import useModal from '../../hooks/useModal';
+import { useNavigate } from 'react-router-dom';
 
 type ScrabbleProps = {
 	settings?: RoomSetting;
 };
 
 export default function Scrabble({ settings }: ScrabbleProps) {
+	const { showModal } = useModal(undefined);
+	const navigate = useNavigate();
 	const [board, setBoard] = useState<Board>([[]]);
 	const [bag, setBag] = useState<Bag>({ tiles: [] });
 	const [bench, setBench] = useState<Bench>({
@@ -48,6 +52,68 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 			setPlacedTiles([]);
 		}
 	);
+
+	useAction<{
+		players: { [name: string]: number };
+		winner?: { name: string; points: number };
+		surrendered: boolean;
+		surrenderer: string;
+	}>('game:end', (message) => {
+		setTimeout(() => {
+			showModal({
+				title: 'Game over',
+				content: (
+					<div className="flex items-center flex-col gap-2">
+						<span className="font-bold text-2xl">
+							Winner: {message.message.winner?.name || '-'}
+						</span>
+						<div className="stats shadow">
+							{Object.keys(message.message.players).map(
+								(name, i) => (
+									<div className="stat" key={i}>
+										<div className="stat-title">{name}</div>
+										<div className="divider divider-horizontal"></div>
+										<div className="stat-value">
+											{message.message.players[name]}
+										</div>
+									</div>
+								)
+							)}
+						</div>
+						{message.message.surrendered && (
+							<div className="alert shadow-lg">
+								<div>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="stroke-current flex-shrink-0 h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+										/>
+									</svg>
+									<span className="font-thin">
+										{message.message.surrenderer} forfeited
+										the game.
+									</span>
+								</div>
+							</div>
+						)}
+					</div>
+				),
+				acceptButton: {
+					content: 'close',
+					onAccept: () => {
+						navigate('/');
+					},
+				},
+			});
+		}, 400);
+	});
 
 	const dropTile = (
 		tile: Tile & { x?: number; y?: number },
