@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import useMessage from '../../hooks/useMessage';
 import { Bench, BoardPosition, Tile } from '../../types/GameTypes';
 import { WSRequest } from '../../types/WSRequest';
@@ -60,55 +60,66 @@ export default function InputDisplay({
 		return filtered;
 	}, [bench, placedTiles]);
 
-	const TradeElement = (
-		<div className="flex flex-col gap-2 items-center">
-			<span className="block">select the tiles you wanna trade</span>
-			<div className="flex gap-2">
-				{bench.tilesOnHand.map((tile, i) => (
-					<div key={i} className="flex flex-col gap-2 items-center">
-						<LetterTile
-							tile={tile}
-							displayPoints={true}
-							tooltip={false}
-							onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-								if (selectedTradeTiles.current.has(i)) {
-									selectedTradeTiles.current.delete(i);
-								} else {
-									selectedTradeTiles.current.add(i);
-								}
-							}}
-							className={'hover:border-info kbd-xs'}
-						/>
-						<input
-							type="checkbox"
-							className="checkbox"
-							onChange={(
-								e: React.ChangeEvent<HTMLInputElement>
-							) => {
-								if (e.target.checked) {
-									selectedTradeTiles.current.add(i);
-								} else {
-									selectedTradeTiles.current.delete(i);
-								}
-							}}
-						/>
-					</div>
-				))}
-			</div>
-		</div>
-	);
-
 	const trade = () => {
 		showModal({
 			title: 'Trading',
-			content: TradeElement,
+			content: (
+				<div className="flex flex-col gap-2 items-center">
+					<span className="block">
+						select the tiles you wanna trade
+					</span>
+					<div className="flex gap-2">
+						{bench.tilesOnHand.map((tile, i) => (
+							<div
+								key={i}
+								className="flex flex-col gap-2 items-center"
+							>
+								<LetterTile
+									tile={tile}
+									displayPoints={true}
+									tooltip={false}
+									onClick={(
+										e: React.MouseEvent<HTMLDivElement>
+									) => {
+										if (selectedTradeTiles.current.has(i)) {
+											selectedTradeTiles.current.delete(
+												i
+											);
+										} else {
+											selectedTradeTiles.current.add(i);
+										}
+									}}
+									className={'hover:border-info kbd-xs'}
+								/>
+								<input
+									type="checkbox"
+									className="checkbox"
+									onChange={(
+										e: React.ChangeEvent<HTMLInputElement>
+									) => {
+										if (e.target.checked) {
+											selectedTradeTiles.current.add(i);
+										} else {
+											console.log('deleting', i);
+
+											selectedTradeTiles.current.delete(
+												i
+											);
+										}
+									}}
+								/>
+							</div>
+						))}
+					</div>
+				</div>
+			),
 			acceptButton: {
 				content: 'trade',
 				onAccept: () => {
 					const toTrade = [
 						...selectedTradeTiles.current.values(),
 					].map((i) => bench.tilesOnHand[i].char);
-
+					selectedTradeTiles.current.clear();
 					message(new WSRequest('game:move:trade', toTrade));
 				},
 			},

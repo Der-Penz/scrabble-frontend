@@ -10,7 +10,6 @@ const useModal = <T extends unknown>(defaultState: T) => {
 	}
 
 	const showModal = (modal: Modal) => {
-		state.current = defaultState;
 		modalContext(modal);
 	};
 

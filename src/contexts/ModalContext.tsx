@@ -17,6 +17,15 @@ export type Modal = {
 	};
 };
 
+const defaultModal = {
+	title: 'Default modal state',
+	content: 'you should not see this, if you do see it just press "OK"',
+	acceptButton: {
+		onAccept: () => {},
+		content: 'OK',
+	},
+};
+
 type ModalContext = (modal: Modal) => void;
 
 export const ModalContext = createContext<ModalContext | undefined>(undefined);
@@ -25,14 +34,7 @@ export default function ModalProvider({ children }: Props) {
 	const modalId = useId();
 
 	const [show, setShow] = useState(false);
-	const [modal, setModal] = useState<Modal>({
-		title: 'Default',
-		content: 'you should not see this',
-		acceptButton: {
-			onAccept: () => {},
-			content: 'OK',
-		},
-	});
+	const [modal, setModal] = useState<Modal>(defaultModal);
 
 	const onAccept = () => {
 		modal?.acceptButton.onAccept();
@@ -46,6 +48,11 @@ export default function ModalProvider({ children }: Props) {
 
 	const hideModal = () => {
 		setShow(false);
+
+		const CLOSE_ANIMATION_DURATION = 200;
+		setTimeout(() => {
+			setModal(defaultModal);
+		}, CLOSE_ANIMATION_DURATION);
 	};
 
 	const showModal = (modal: Modal) => {
@@ -59,7 +66,7 @@ export default function ModalProvider({ children }: Props) {
 				id={modalId}
 				className="modal-toggle"
 				checked={show}
-				onChange={()=>{}}
+				onChange={() => {}}
 			/>
 			<div className="modal modal-bottom sm:modal-middle">
 				<div className="modal-box">
