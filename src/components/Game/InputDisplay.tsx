@@ -5,7 +5,6 @@ import { WSRequest } from '../../types/WSRequest';
 import LetterTile from './LetterTile';
 import { FaAngleDoubleDown } from 'react-icons/fa';
 import useModal from '../../hooks/useModal';
-// @ts-ignore
 import classNames from 'clean-react-classnames';
 import DraggableLetterTile from './DraggableLetterTile';
 import { useDrop } from 'react-dnd';

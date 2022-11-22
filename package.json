@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "clean-react-classnames": "^1.0.0",
+    "clean-react-classnames": "^1.1.2",
     "daisyui": "^2.41.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",

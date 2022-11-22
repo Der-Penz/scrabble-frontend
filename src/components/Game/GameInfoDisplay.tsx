@@ -3,7 +3,6 @@ import { GameInfo } from '../../types/GameTypes';
 import { Objective, RoomSetting } from '../../types/RoomSetting';
 import { formatMillis } from '../../util/Helpers';
 import PlayerInfo from './PlayerInfo';
-// @ts-ignore
 import classNames from 'clean-react-classnames';
 
 type GameInfoProps = {

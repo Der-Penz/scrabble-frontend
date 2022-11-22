@@ -1,6 +1,5 @@
 import React from 'react';
 import { Tile } from '../../types/GameTypes';
-// @ts-ignore
 import classNames from 'clean-react-classnames';
 
 export type LetterTileProps = {

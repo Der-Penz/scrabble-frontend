@@ -1,5 +1,4 @@
 import React from 'react';
-// @ts-ignore
 import classNames from 'clean-react-classnames';
 import { formatMillis } from '../../util/Helpers';
 

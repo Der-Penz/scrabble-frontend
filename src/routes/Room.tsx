@@ -1,6 +1,5 @@
 import { Reducer, useEffect, useReducer, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-// @ts-ignore
 import classnames from 'clean-react-classnames';
 import Scrabble from '../components/Game/Scrabble';
 import useAction from '../hooks/useAction';
