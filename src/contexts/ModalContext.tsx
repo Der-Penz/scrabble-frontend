@@ -1,4 +1,11 @@
-import React, { createContext, ReactNode, useId, useState } from 'react';
+import React, {
+	createContext,
+	ReactNode,
+	RefObject,
+	useId,
+	useRef,
+	useState,
+} from 'react';
 
 type Props = {
 	children?: ReactNode;
@@ -33,7 +40,8 @@ export const ModalContext = createContext<ModalContext | undefined>(undefined);
 export default function ModalProvider({ children }: Props) {
 	const modalId = useId();
 
-	const [show, setShow] = useState(false);
+	const showRef = useRef(false);
+	const modalRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 	const [modal, setModal] = useState<Modal>(defaultModal);
 
 	const onAccept = () => {
@@ -47,17 +55,22 @@ export default function ModalProvider({ children }: Props) {
 	};
 
 	const hideModal = () => {
-		setShow(false);
+		modalRef.current.classList.add('!opacity-0');
 
-		const CLOSE_ANIMATION_DURATION = 200;
-		setTimeout(() => {
+		modalRef.current.addEventListener('transitionend', () => {
+			if (!modalRef.current.classList.contains('!opacity-0')) {
+				return;
+			}
+			showRef.current = false;
+			modalRef.current.classList.remove('!opacity-0');
 			setModal(defaultModal);
-		}, CLOSE_ANIMATION_DURATION);
+		});
 	};
 
 	const showModal = (modal: Modal) => {
 		setModal(modal);
-		setShow(true);
+		modalRef.current.classList.remove('!opacity-0');
+		showRef.current = true;
 	};
 	return (
 		<ModalContext.Provider value={showModal}>
@@ -65,15 +78,15 @@ export default function ModalProvider({ children }: Props) {
 				type="checkbox"
 				id={modalId}
 				className="modal-toggle"
-				checked={show}
+				checked={showRef.current}
 				onChange={() => {}}
 			/>
-			<div className="modal modal-bottom sm:modal-middle">
+			<div className="modal modal-bottom sm:modal-middle" ref={modalRef}>
 				<div className="modal-box">
 					{modal?.title && (
 						<h3 className="font-bold text-lg">{modal?.title}</h3>
 					)}
-					<p className="py-4">{modal?.content}</p>
+					<div className="py-4">{modal?.content}</div>
 					<div className="modal-action">
 						{modal?.deniedButton && (
 							<label
