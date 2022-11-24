@@ -10,10 +10,35 @@ const useModal = <T extends unknown>(defaultState: T) => {
 	}
 
 	const showModal = (modal: Modal) => {
+		state.current = defaultState;
 		modalContext(modal);
 	};
 
-	return { showModal, state };
+	const showModalAsync = (modal: Modal) => {
+		return new Promise<T>((res, rej) => {
+			showModal({
+				...modal,
+				acceptButton: {
+					content: modal.acceptButton.content,
+					onAccept: () => {
+						res(state.current);
+						modal.acceptButton.onAccept();
+					},
+				},
+				...(modal.deniedButton && {
+					deniedButton: {
+						content: modal.deniedButton?.content!,
+						onDenied: () => {
+							rej();
+							modal.deniedButton?.onDenied();
+						},
+					},
+				}),
+			});
+		});
+	};
+
+	return { showModal, showModalAsync, state };
 };
 
 export default useModal;
