@@ -17,7 +17,7 @@ type ScrabbleProps = {
 };
 
 export default function Scrabble({ settings }: ScrabbleProps) {
-	const { showModal } = useModal(undefined);
+	const { showModal, showModalAsync, state: jokerLetter } = useModal('A');
 	const navigate = useNavigate();
 	const [board, setBoard] = useState<Board>([[]]);
 	const [bag, setBag] = useState<Bag>({ tiles: [] });
@@ -111,7 +111,7 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		});
 	});
 
-	const dropTile = (
+	const dropTile = async (
 		tile: Tile & { x?: number; y?: number },
 		where: BoardPosition
 	) => {
@@ -120,16 +120,43 @@ export default function Scrabble({ settings }: ScrabbleProps) {
 		}
 
 		if (tile.char === '0') {
-			let input =
-				prompt('enter letter to convert Joker to')
-					?.at(0)
-					?.toUpperCase() || 'A';
+			let res = await showModalAsync({
+				title: 'Joker conversion',
+				content: (
+					<div className="grid place-items-center gap-4">
+						<span className="text-lg">
+							Enter letter to convert Joker to:
+						</span>
+						<input
+							type="text"
+							maxLength={1}
+							placeholder="Enter letter here"
+							className="input input-bordered input-sm w-full max-w-xs"
+							onKeyDown={(e) => {
+								let key = e.key.toUpperCase().at(0);
+								if (!key?.match(/[A-Z]/)) {
+									e.preventDefault();
+									e.stopPropagation();
+								} else {
+									jokerLetter.current = key;
+								}
+							}}
+						/>
+					</div>
+				),
+				acceptButton: {
+					content: 'convert',
+					onAccept: () => {},
+				},
+			});
 
-			if (!input.match(/[A-Z]/)) {
-				input = 'A';
+			res = res?.at(0)?.toUpperCase() || 'A';
+
+			if (!res.match(/[A-Z]/)) {
+				res = 'A';
 			}
 
-			tile.as = input;
+			tile.as = res;
 		}
 
 		setPlacedTiles((prev) => {
