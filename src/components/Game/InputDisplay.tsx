@@ -59,6 +59,10 @@ export default function InputDisplay({
 		return filtered;
 	}, [bench, placedTiles]);
 
+	useEffect(() => {place(true)}, [
+		placedTiles	
+	])
+
 	const trade = () => {
 		showModal({
 			title: 'Trading',
@@ -147,10 +151,14 @@ export default function InputDisplay({
 		});
 	};
 
-	const place = () => {
+	const place = (ghostPlace: boolean) => {
+		if(placedTiles.length === 0){
+			return;
+		}
+
 		message(
 			new WSRequest(
-				'game:move:place',
+				ghostPlace ? 'game:move:ghost' : 'game:move:place',
 				placedTiles.map((pos) => ({
 					x: pos.x,
 					y: pos.y,
@@ -234,7 +242,7 @@ export default function InputDisplay({
 					Trade
 				</button>
 				<button
-					onClick={place}
+					onClick={() => place(false)}
 					className={classNames(
 						'btn btn-outline btn-success flex-1',
 						{
