@@ -1,19 +1,17 @@
-import { Reducer, useEffect, useReducer, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
 import classnames from 'clean-react-classnames';
+import { Reducer, useReducer, useState } from 'react';
+import { FaRegHourglass } from 'react-icons/fa';
+import {
+	RiUserLine, RiUserSearchLine, RiUserSettingsLine
+} from 'react-icons/ri';
+import { useSearchParams } from 'react-router-dom';
 import Scrabble from '../components/Game/Scrabble';
+import RoomHeader from '../components/Room/RoomHeader';
+import RoomSettings from '../components/Room/RoomSettings';
 import useAction from '../hooks/useAction';
 import { Player } from '../types/Player';
 import { Objective, RoomSetting } from '../types/RoomSetting';
 import { WSRequest } from '../types/WSRequest';
-import RoomSettings from '../components/Room/RoomSettings';
-import RoomHeader from '../components/Room/RoomHeader';
-import {
-	RiUserLine,
-	RiUserSettingsLine,
-	RiUserSearchLine,
-} from 'react-icons/ri';
-import { FaRegHourglass } from 'react-icons/fa';
 
 export enum PlayerAction {
 	JOINED = 'ADD',
@@ -94,6 +92,7 @@ export default function Room() {
 			<RoomHeader
 				id={searchParams.get('id') || ''}
 				name={self?.name || ''}
+				host={!!self?.host}
 			/>
 			{started ? (
 				<Scrabble settings={settings} />

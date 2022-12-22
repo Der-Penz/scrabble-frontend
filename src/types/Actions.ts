@@ -7,6 +7,7 @@ type Action =
 	| 'player:self'
 	| 'game:next'
 	| 'game:state'
+	| 'game:save'
 	| 'game:move:trade'
 	| 'game:move:skip'
 	| 'game:move:place'
