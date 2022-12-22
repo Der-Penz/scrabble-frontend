@@ -3,7 +3,7 @@ import { Error } from '../types/Error';
 import { JSONResponse } from '../types/JSONResponse';
 
 export const useFetch = <T extends unknown>(
-	defaultUrl: string,
+	defaultUrl: string = '',
 	options?: RequestInit
 ) => {
 	const [url, setUrl] = useState(defaultUrl);

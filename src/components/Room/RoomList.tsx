@@ -1,15 +1,8 @@
-import React from 'react';
-import { useFetch } from '../../hooks/useFetch';
-import RoomItem from './RoomItem';
 import { MdOutlineRefresh } from 'react-icons/md';
+import { useFetch } from '../../hooks/useFetch';
+import { OpenRoom } from '../../types/Room';
+import RoomItem from './RoomItem';
 
-type OpenRoom = {
-	playerCount: number;
-	gameState: string;
-	host: string;
-	roomID: string;
-	roomJoinUrl: string;
-};
 
 export default function RoomList() {
 	const { error, response, loading, makeRequest } = useFetch<OpenRoom[]>(

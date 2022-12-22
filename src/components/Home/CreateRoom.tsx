@@ -11,7 +11,7 @@ type CreateRoom = {
 export default function CreateRoom() {
 	const navigate = useNavigate();
 	const customIDRef = useRef() as React.MutableRefObject<HTMLInputElement>;
-    const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+	const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
 	const { error, response, loading, makeRequest } = useFetch<CreateRoom>('', {
 		method: 'POST',
@@ -31,11 +31,13 @@ export default function CreateRoom() {
 
 	useEffect(() => {
 		if (response?.message) {
-            let name = nameRef.current.value.trim();
+			let name = nameRef.current.value.trim();
 
-			navigate(`/room?id=${response.roomID}${name ? `&name=${name}` : ''}`);
+			navigate(
+				`/room?id=${response.roomID}${name ? `&name=${name}` : ''}`
+			);
 		}
-	});
+	}, [response]);
 
 	return (
 		<div>

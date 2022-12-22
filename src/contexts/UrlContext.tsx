@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { WSResponse } from '../types/WSResponse';
 
 interface Props {
 	children?: ReactNode;
@@ -15,11 +16,12 @@ export default function UrlProvider({ children }: Props) {
 	const wsURL = useMemo(() => {
 		const id = searchParams.get('id');
 		const name = searchParams.get('name');
+		const socketToken = localStorage.getItem('socketToken')?.split(':')[1];
 
-		return `ws://localhost:8808/ws/${id}${name ? `?name=${name}` : ''}`;
+		return `ws://localhost:8808/ws/${id}${name ? `?name=${name}` : ''}${socketToken ? `?token=${socketToken}` : ''}`;
 	}, [searchParams]);
 
-	const { readyState } = useWebSocket(wsURL, {
+	const { readyState, lastJsonMessage } = useWebSocket(wsURL, {
 		share: true,
 	});
 
@@ -30,6 +32,16 @@ export default function UrlProvider({ children }: Props) {
 			navigate('/');
 		}
 	}, [searchParams, readyState]);
+
+	useEffect(() => {
+		if (lastJsonMessage === null) return;
+
+		const message = lastJsonMessage as WSResponse<{ socketToken: string }>;
+
+		if (message.action === 'player:self') {
+			localStorage.setItem('socketToken', message.message.socketToken);
+		}
+	}, [lastJsonMessage]);
 
 	return <UrlContext.Provider value={wsURL}>{children}</UrlContext.Provider>;
 }
