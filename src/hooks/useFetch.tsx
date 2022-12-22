@@ -15,13 +15,16 @@ export const useFetch = <T extends unknown>(
 	const [counter, setCounter] = useState(0);
 
 	useEffect(() => {
-		if(url === '') return;
+		if (url === '') return;
 		const controller = new AbortController();
 		setLoading(true);
 		setResponse(undefined);
 		setError(undefined);
-		
-		fetch(url, { ...options, signal: controller.signal })
+
+		fetch(url, {
+			...options,
+			signal: controller.signal,
+		})
 			.then((res) => {
 				return res.json();
 			})
@@ -33,7 +36,7 @@ export const useFetch = <T extends unknown>(
 						errorMessage: json.errorMessage as string,
 					});
 					setResponse(undefined);
-				}else{
+				} else {
 					setResponse((json as unknown as JSONResponse).content as T);
 				}
 			})
@@ -56,7 +59,7 @@ export const useFetch = <T extends unknown>(
 	}, [counter]);
 
 	const makeRequest = (url?: string) => {
-		if(url){
+		if (url) {
 			setUrl(url);
 		}
 		setCounter((prev) => (prev + 1) % 1000);

@@ -59,9 +59,9 @@ export default function InputDisplay({
 		return filtered;
 	}, [bench, placedTiles]);
 
-	useEffect(() => {place(true)}, [
-		placedTiles	
-	])
+	useEffect(() => {
+		place(true);
+	}, [placedTiles]);
 
 	const trade = () => {
 		showModal({
@@ -152,7 +152,7 @@ export default function InputDisplay({
 	};
 
 	const place = (ghostPlace: boolean) => {
-		if(placedTiles.length === 0){
+		if (placedTiles.length === 0) {
 			return;
 		}
 
@@ -163,6 +163,7 @@ export default function InputDisplay({
 					x: pos.x,
 					y: pos.y,
 					char: pos.placedTile?.as || pos.placedTile?.char,
+					asJoker: !!pos.placedTile?.as,
 				}))
 			)
 		);
@@ -187,7 +188,7 @@ export default function InputDisplay({
 	};
 
 	return (
-		<div className='min-w-min w-1/2 max-w-xl'>
+		<div className="min-w-min w-1/2 max-w-xl">
 			<section
 				ref={drop}
 				className={classNames(
