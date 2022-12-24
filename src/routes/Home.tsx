@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreateRoom from '../components/Home/CreateRoom';
 import JoinRoom from '../components/Home/JoinRoom';
-import RoomList from '../components/Room/RoomList';
+import RoomList from '../components/Home/RoomList';
 import { useFetch } from '../hooks/useFetch';
 import useModal from '../hooks/useModal';
 import { ExitsRoom } from '../types/Room';
+import { toSearchParamString } from '../util/Helpers';
 
 export default function Home() {
 	const navigate = useNavigate();
@@ -15,10 +16,12 @@ export default function Home() {
 	useEffect(() => {
 		const socketToken = localStorage.getItem('socketToken');
 		const roomID = socketToken?.split(':')[0];
+
+		const params = toSearchParamString({
+			id: roomID,
+		});
 		if (roomID) {
-			makeRequest(
-				`http://localhost:8808/api/v1/room/exists?id=${roomID}`
-			);
+			makeRequest(`/room/exists` + params);
 		}
 	}, []);
 
@@ -35,7 +38,10 @@ export default function Home() {
 				acceptButton: {
 					content: 'Reconnect',
 					onAccept: () => {
-						navigate(`/room?id=${response.idToCheck}`);
+						const params = toSearchParamString({
+							id: response.idToCheck,
+						});
+						navigate(`/room` + params);
 					},
 				},
 				deniedButton: {

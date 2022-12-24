@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
+import { toSearchParamString } from '../../util/Helpers';
 
 type CreateRoom = {
 	roomID: string;
@@ -13,29 +14,33 @@ export default function CreateRoom() {
 	const customIDRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 	const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
-	const { error, response, loading, makeRequest } = useFetch<CreateRoom>('', {
-		method: 'POST',
-	});
+	const { error, response, loading, makeRequest } = useFetch<CreateRoom>(
+		'',
+		'POST'
+	);
 
 	const createRoom = async () => {
 		const customID = customIDRef.current.value;
 
-		let url = 'http://localhost:8808/api/v1/room/create';
+		let url = '/room/create';
 
-		if (customID) {
-			url += `?id=${customID}`;
-		}
+		const params = toSearchParamString({
+			id: customID,
+		});
 
-		makeRequest(url);
+		makeRequest(url + params);
 	};
 
 	useEffect(() => {
 		if (response?.message) {
 			let name = nameRef.current.value.trim();
 
-			navigate(
-				`/room?id=${response.roomID}${name ? `&name=${name}` : ''}`
-			);
+			const params = toSearchParamString({
+				id: response.roomID,
+				name,
+			});
+
+			navigate(`/room` + params);
 		}
 	}, [response]);
 

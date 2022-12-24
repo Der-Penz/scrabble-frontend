@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { Error } from '../types/Error';
 import { JSONResponse } from '../types/JSONResponse';
 
+type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
 export const useFetch = <T extends unknown>(
 	defaultUrl: string = '',
-	options?: RequestInit
+	method: HTTPMethod = 'GET',
+	backendURLPrefix: boolean = true
 ) => {
 	const [url, setUrl] = useState(defaultUrl);
 	const [loading, setLoading] = useState(false);
@@ -21,8 +24,8 @@ export const useFetch = <T extends unknown>(
 		setResponse(undefined);
 		setError(undefined);
 
-		fetch(url, {
-			...options,
+		fetch(backendURLPrefix ? `${import.meta.env.VITE_URL}${url}` : url, {
+			method: method as string,
 			signal: controller.signal,
 		})
 			.then((res) => {

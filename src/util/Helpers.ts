@@ -28,5 +28,5 @@ export function toSearchParamString(params: Record<string, string | undefined | 
 		}
 	});
 	parameter.sort()
-	return parameter.toString();
+	return '?' + parameter.toString();
 }

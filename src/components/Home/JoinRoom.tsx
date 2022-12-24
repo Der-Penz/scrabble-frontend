@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
+import { toSearchParamString } from '../../util/Helpers';
 
 type ExistsRoom = {
 	exists: boolean;
@@ -13,23 +14,26 @@ export default function JoinRoom() {
 	const roomIDRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 	const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
-	const { error, response, loading, makeRequest } = useFetch<ExistsRoom>('');
+	const { error, response, loading, makeRequest } = useFetch<ExistsRoom>();
 
 	const joinRoom = async () => {
 		const id = roomIDRef.current.value;
 		if (id === '') {
 			return;
 		}
-		makeRequest(`http://localhost:8808/api/v1/room/exists?id=${id}`);
+		makeRequest(`/room/exists?id=${id}`);
 	};
 
 	useEffect(() => {
 		if (response?.exists) {
 			let name = nameRef.current.value.trim();
 
-			navigate(
-				`/room?id=${response.idToCheck}${name ? `&name=${name}` : ''}`
-			);
+			const params = toSearchParamString({
+				id: response.idToCheck,
+				name,
+			});
+
+			navigate(`/room` + params);
 		}
 	}, [response]);
 

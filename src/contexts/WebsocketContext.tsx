@@ -28,7 +28,7 @@ export default function WebsocketProvider({ children }: Props) {
 		const name = searchParams.get('name');
 		const socketToken = localStorage.getItem('socketToken')?.split(':')[1];
 
-		const url: string = `${import.meta.env.VITE_WS}/${id}?`;
+		const url: string = `${import.meta.env.VITE_WS}/${id}`;
 		const params = toSearchParamString({
 			name,
 			socketToken,

@@ -7,7 +7,7 @@ export type OpenRoom = {
 };
 
 export type ExitsRoom = {
-	idToCheck: boolean;
+	idToCheck: string;
 	exists: boolean;
 	gameState: 'playing' | 'waiting' | 'ended';
 	paused: boolean;
