@@ -1,15 +1,25 @@
 import { createContext, ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { JsonValue, SendJsonMessage } from 'react-use-websocket/dist/lib/types';
 import { WSResponse } from '../types/WSResponse';
+import { toSearchParamString } from '../util/Helpers';
 
 interface Props {
 	children?: ReactNode;
 }
 
-export const UrlContext = createContext<string | undefined>(undefined);
+interface WebsocketContextType {
+	lastJsonMessage: JsonValue | null;
+	sendJsonMessage: SendJsonMessage;
+}
 
-export default function UrlProvider({ children }: Props) {
+export const WebsocketContext = createContext<WebsocketContextType>({
+	lastJsonMessage: null,
+	sendJsonMessage: () => {},
+});
+
+export default function WebsocketProvider({ children }: Props) {
 	const [searchParams, _] = useSearchParams();
 	const navigate = useNavigate();
 
@@ -18,12 +28,21 @@ export default function UrlProvider({ children }: Props) {
 		const name = searchParams.get('name');
 		const socketToken = localStorage.getItem('socketToken')?.split(':')[1];
 
-		return `ws://localhost:8808/ws/${id}${name ? `?name=${name}` : ''}${socketToken ? `?token=${socketToken}` : ''}`;
+		const url: string = `${import.meta.env.VITE_WS}/${id}?`;
+		const params = toSearchParamString({
+			name,
+			socketToken,
+		});
+
+		return url + params;
 	}, [searchParams]);
 
-	const { readyState, lastJsonMessage } = useWebSocket(wsURL, {
-		share: true,
-	});
+	const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket(
+		wsURL,
+		{
+			share: true,
+		}
+	);
 
 	useEffect(() => {
 		const id = searchParams.get('id');
@@ -34,7 +53,7 @@ export default function UrlProvider({ children }: Props) {
 	}, [searchParams, readyState]);
 
 	useEffect(() => {
-		if (lastJsonMessage === null) return;
+		if (!lastJsonMessage) return;
 
 		const message = lastJsonMessage as WSResponse<{ socketToken: string }>;
 
@@ -43,5 +62,11 @@ export default function UrlProvider({ children }: Props) {
 		}
 	}, [lastJsonMessage]);
 
-	return <UrlContext.Provider value={wsURL}>{children}</UrlContext.Provider>;
+	return (
+		<WebsocketContext.Provider
+			value={{ lastJsonMessage: lastJsonMessage, sendJsonMessage }}
+		>
+			{children}
+		</WebsocketContext.Provider>
+	);
 }

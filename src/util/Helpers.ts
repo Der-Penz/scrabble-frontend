@@ -18,3 +18,15 @@ export function formatMillis(millis: number) {
 		string: `${millis < 0 && '-'}${hours}:${minutes}:${seconds}`,
 	};
 }
+
+export function toSearchParamString(params: Record<string, string | undefined | null>) {
+	const parameter = new URLSearchParams();
+	Object.keys(params).forEach((key) => {
+		const value = params[key];
+		if (value) {
+			parameter.set(key, value);
+		}
+	});
+	parameter.sort()
+	return parameter.toString();
+}

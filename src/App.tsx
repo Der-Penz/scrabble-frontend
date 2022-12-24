@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ModalProvider from './contexts/ModalContext';
-import UrlProvider from './contexts/UrlContext';
+import WebsocketProvider from './contexts/WebsocketContext';
 import Home from './routes/Home';
 import Room from './routes/Room';
 
@@ -16,9 +16,9 @@ function App() {
 						<Route
 							path="/room"
 							element={
-								<UrlProvider>
+								<WebsocketProvider>
 									<Room />
-								</UrlProvider>
+								</WebsocketProvider>
 							}
 						/>
 						<Route path="*" element={<Home />} />

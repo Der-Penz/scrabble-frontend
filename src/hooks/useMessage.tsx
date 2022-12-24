@@ -1,13 +1,9 @@
 import { JsonValue } from 'react-use-websocket/dist/lib/types';
 import { WSRequest } from '../types/WSRequest';
-import useWebSocket from 'react-use-websocket';
-import useWsUrl from './useWsUrl';
+import useWebsocket from './useWebsocket';
 
 const useMessage = () => {
-	let url = useWsUrl() || '';
-	const { sendJsonMessage } = useWebSocket(url, {
-		share: true,
-	});
+	const { sendJsonMessage } = useWebsocket();
 
 	const sendMessage = <T extends unknown>(message: WSRequest<T>) => {
 		sendJsonMessage(message.toJSON() as JsonValue);
